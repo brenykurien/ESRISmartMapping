@@ -54,6 +54,12 @@ ESRIMapInstance.FeatureSet.prototype =
 			f.attributes[this.fieldAdded] = Math.floor(Math.random() * 100);
 		});
 	},
+	AssignRandomTypesToValues : function(){
+		var arr = ["Like a lot","Like","Okay","Dont like","Dont like at all"];
+		this.featureSet.features.map(f => {
+			f.attributes[this.fieldAdded] = arr[Math.floor(Math.random() * arr.length)]; 
+		});
+	},
 	CreateFeatureCollectionFromFeatureSet: function() {
 		var layerDefinition = {
 			"geometryType": this.featureSet.geometryType,
@@ -161,7 +167,7 @@ ESRIMapInstance.SmartMappingRenderer.prototype =
 			});
 		});
 	},
-	CreateColorRenderer : function(classificationMethod, field){
+	CreateColorRenderer : function(field){
 		var _this = this;
 		return new Promise(resolve => {
 			require([
@@ -170,8 +176,35 @@ ESRIMapInstance.SmartMappingRenderer.prototype =
 				resolve(smartMapping.createColorRenderer({
 					layer: _this.layer,
 					field: field,
-					basemap: _this.map.getBasemap(),
-					classificationMethod: classificationMethod
+					basemap: _this.map.getBasemap()
+				}));
+			});
+		});
+	},
+	CreateSizeRenderer : function(field){
+		var _this = this;
+		return new Promise(resolve => {
+			require([
+	        "esri/renderers/smartMapping"
+			], function(smartMapping) {
+				resolve(smartMapping.createSizeRenderer({
+					layer: _this.layer,
+					field: field,
+					basemap: _this.map.getBasemap()
+				}));
+			});
+		});
+	},
+	CreateTypeRenderer : function(field){
+		var _this = this;
+		return new Promise(resolve => {
+			require([
+	        "esri/renderers/smartMapping"
+			], function(smartMapping) {
+				resolve(smartMapping.createTypeRenderer({
+					layer: _this.layer,
+					field: field,
+					basemap: _this.map.getBasemap()
 				}));
 			});
 		});

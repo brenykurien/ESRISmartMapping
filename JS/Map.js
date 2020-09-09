@@ -7,8 +7,8 @@ async function CreateMapInstance(){
 	var talukFeatureSet = adminBoundaryService.GetTaluks();
 
 	var talukFeatureSetService = new ESRIMapInstance.FeatureSet(talukFeatureSet);
-	//talukFeatureSetService.AddFieldToFeatuerSet("Value", 10, "esriFieldTypeString");
-	//talukFeatureSetService.AssignRandomValuesToValue();
+	talukFeatureSetService.AddFieldToFeatuerSet("Type", 10, "esriFieldTypeString");
+	talukFeatureSetService.AssignRandomTypesToValues();
 	var talukFeatureCollection = talukFeatureSetService.CreateFeatureCollectionFromFeatureSet();
 
 	var talukFeatureLayerService = new ESRIMapInstance.FeatureLayer(talukFeatureCollection,"Value");
@@ -17,7 +17,7 @@ async function CreateMapInstance(){
 	//talukFeatureLayerService.CreateInfoTemplate("KGISTalukName");
 
 	var rendererService = new ESRIMapInstance.SmartMappingRenderer(talukLayer, map);
-	rendererService.CreateColorRenderer("quantile","SHAPE_Area")
+	rendererService.CreateColorRenderer("SHAPE_Area")
 	.then(response=>{
 		talukLayer.setRenderer(response.renderer);
 		map.addLayer(talukLayer);
@@ -47,7 +47,7 @@ async function CreateMapInstance(){
 		console.log(selectedRenderer);
 		//map.removeLayer(layer);
 		if (selectedRenderer == "ColorRenderer") {
-			rendererService.CreateColorRenderer("quantile","SHAPE_Area")
+			rendererService.CreateColorRenderer("SHAPE_Area")
 			.then(response=>{
 				talukLayer.setRenderer(response.renderer);
 				talukLayer.redraw();
@@ -66,6 +66,24 @@ async function CreateMapInstance(){
 			});
 		} else if (selectedRenderer == "ClassedColorRenderer") {
 			rendererService.CreateClassedColorRenderer("quantile","SHAPE_Area")
+			.then(response=>{
+				talukLayer.setRenderer(response.renderer);
+				talukLayer.redraw();
+			})
+			.catch(error => {
+				console.log(error);
+			});
+		} else if(selectedRenderer == "SizeRenderer"){
+			rendererService.CreateSizeRenderer("SHAPE_Area")
+			.then(response=>{
+				talukLayer.setRenderer(response.renderer);
+				talukLayer.redraw();
+			})
+			.catch(error => {
+				console.log(error);
+			});
+		} else if(selectedRenderer == "TypeRenderer"){
+			rendererService.CreateTypeRenderer("Type")
 			.then(response=>{
 				talukLayer.setRenderer(response.renderer);
 				talukLayer.redraw();
