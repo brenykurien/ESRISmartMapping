@@ -6,7 +6,7 @@
   <title></title>
   <link rel="stylesheet" href="https://js.arcgis.com/3.33/esri/css/esri.css">
   <style>
-   body {
+   body, .esriPopup, #sidebar {
       font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
       font-size: 14px;
     }
@@ -14,6 +14,29 @@
     html, body {
       height: 100%;
       margin: 0;
+    }
+
+  #renderers-filter {
+        width: 100%;
+    display: flex;
+    border: solid;
+    }
+
+    .renderer-item {
+    padding: 6px;
+    text-align: center;
+    vertical-align: baseline;
+    cursor: pointer;
+    height: 40px;
+    width: 33.33%;
+    }
+
+    .renderer-item:focus {
+    background-color: lightgrey;
+    }
+
+    .renderer-item:hover {
+    background-color: lightgrey;
     }
 
   </style>
@@ -25,6 +48,17 @@
   <script src="JS/Map.js"></script>
   </head>
   <body>
-    <div id="mapId" style="position: relative; height: 95%;"></div>
+    <div id="renderers-filter" class="esri-widget">
+    <div class="renderer-item" data-renderer="ColorRenderer">Color Renderer</div>
+    <div class="renderer-item" data-renderer="ClassedSizeRenderer">Classed Size Renderer</div>
+    <div class="renderer-item" data-renderer="ClassedColorRenderer">Classed Color Renderer</div>
+    </div>
+    <div id="mapId" style="position: relative; height: 95%;">
+      <div id="sidebar" style="position: absolute; top: 5px; right: 5px; z-index: 100; padding: 5px; background-color: #F5F5F5; box-shadow: -3px 3px 3px 0px #959595;">
+        <div style="font-weight: bold; padding: 3px;">Legend</div>
+        <hr>
+        <div id="legendDiv"></div>
+      </div>
+    </div>
   </body>
 </html>

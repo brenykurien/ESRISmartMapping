@@ -177,3 +177,19 @@ ESRIMapInstance.SmartMappingRenderer.prototype =
 		});
 	}
 }
+
+ESRIMapInstance.Legend = function(map,layer,title,legendDiv){
+	return new Promise(resolve => {
+		require([
+		"esri/dijit/Legend"
+		],  function(Legend){
+			var legend = new Legend({
+				map: map,
+				layerInfos: [
+					{ layer: layer, title: title }
+				]
+			}, legendDiv);
+			resolve(legend);
+		});
+	  });
+}
