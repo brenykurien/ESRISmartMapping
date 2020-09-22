@@ -39,6 +39,22 @@
     background-color: lightgrey;
     }
 
+    #mapId {
+      filter: drop-shadow(0px 14px 8px gray);
+    }
+
+    #layerListPane {
+      /* width: 25%;
+      float: right; */
+      position: absolute; 
+      top: 65px; 
+      right: 5px; 
+      z-index: 100; 
+      padding: 5px; 
+      background-color: #F5F5F5; 
+      box-shadow: -3px 3px 3px 0px #959595;
+    }
+
   </style>
   <script src="https://js.arcgis.com/3.33/"></script>
   <script src="FeatureSetJSON/Taluk.json"></script>
@@ -48,19 +64,32 @@
   <script src="JS/Map.js"></script>
   </head>
   <body>
-    <div id="renderers-filter" class="esri-widget">
+    <!-- <div id="renderers-filter" class="esri-widget">
     <div class="renderer-item" data-renderer="ColorRenderer">Color Renderer</div>
     <div class="renderer-item" data-renderer="ClassedColorRenderer">Classed Color Renderer</div>
     <div class="renderer-item" data-renderer="SizeRenderer">Size Renderer</div>
     <div class="renderer-item" data-renderer="ClassedSizeRenderer">Classed Size Renderer</div>
-    <div class="renderer-item" data-renderer="TypeRenderer">Type Renderer</div>
+    <div class="renderer-item" data-renderer="TypeRenderer">Type Renderer</div> -->
     </div>
-    <div id="mapId" style="position: relative; height: 95%;">
-      <div id="sidebar" style="position: absolute; top: 5px; right: 5px; z-index: 100; padding: 5px; background-color: #F5F5F5; box-shadow: -3px 3px 3px 0px #959595;">
+     <div id="layerListPane" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'right'">
+      <div id="layerList"></div>
+      <label for="fieldNames">Select Render : </label>
+      <select id="fieldNames" name="baseSym"
+              data-dojo-type="dijit/form/FilteringSelect"
+              data-dojo-props="style:'width:200px;'">
+              <option value="ColorRenderer">Color Renderer</option>
+              <option value="ClassedColorRenderer">Classed Color Renderer</option>
+              <option value="SizeRenderer">Size Renderer</option>
+              <option value="ClassedSizeRenderer">Classed Size Renderer</option>
+              <option value="TypeRenderer">Type Renderer</option>
+      </select>
+    </div>
+    <div id="mapId" style="position: relative; height: 100%;">
+      <!-- <div id="sidebar" style="position: absolute; top: 5px; right: 5px; z-index: 100; padding: 5px; background-color: #F5F5F5; box-shadow: -3px 3px 3px 0px #959595;">
         <div style="font-weight: bold; padding: 3px;">Legend</div>
         <hr>
         <div id="legendDiv"></div>
-      </div>
+      </div> -->
     </div>
   </body>
 </html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no" />
+  <title></title>
+  <link rel="stylesheet" href="https://js.arcgis.com/3.33/dijit/themes/claro/claro.css">
+  <link rel="stylesheet" href="https://js.arcgis.com/3.33/esri/css/esri.css">
+  <style>
+   body, .esriPopup, #sidebar {
+      font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+      font-size: 14px;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    #mapId {
+      filter: drop-shadow(0px 14px 8px gray);
+    }    
+
+    #bottomPanel {
+        left: 50%;
+        margin: 0 auto;
+        margin-left: -500px;
+        position: absolute;
+        bottom: 2.5em;
+      }
+
+      #timeInfo{
+        border-radius: 4px;
+        border: solid 2px #ccc;
+        background-color: #fff;
+        display: block;
+        padding: 5px;
+        position: relative;
+        text-align: center;
+        width: 1000px;
+        z-index: 99;
+      }
+      .claro .dijitSliderFocused .dijitSliderProgressBarH, .claro .dijitSliderFocused .dijitSliderLeftBumper {
+          background-color: #ffffff;
+      }
+
+  </style>
+  <script src="https://js.arcgis.com/3.33/"></script>
+  <script src="FeatureSetJSON/Taluk.json"></script>
+  <script src="FeatureSetJSON/District.json"></script>
+  <script src="JS/FeatureSetJSONService.js"></script>
+  <script src="JS/ESRIMapInstance.js"></script>
+  <script src="JS/basemap.js"></script>
+  </head>
+  <body>
+    <body class="claro">        
+        <div id="mapId" style="position: relative; height: 85%;">
+            <div id="bottomPanel">
+                <div id="timeInfo">
+                <div>Active cases as on <span id="selectedDate"></span></div>
+                <div id="timeSliderDiv"></div>
+                </div>
+            </div>
+        </div>
+    </body>
+  </body>
+</html>
