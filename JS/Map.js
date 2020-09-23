@@ -12,14 +12,14 @@ async function CreateMapInstance(){
 	talukFeatureSetService.AssignRandomTypesToValues();
 	var talukFeatureCollection = talukFeatureSetService.CreateFeatureCollectionFromFeatureSet();
 	var talukFeatureLayerService = new ESRIMapInstance.FeatureLayer(talukFeatureCollection,"talukLayerId");
-	var talukLayer = await talukFeatureLayerService.CreateFeatureLayerFromFeatureCollection("KGISTalukName");
+	var talukLayer = await talukFeatureLayerService.CreateFeatureLayerFromFeatureCollection("TalukName");
 	
 	var districtFeatureSetService = new ESRIMapInstance.FeatureSet(districtFeatureSet);
 	districtFeatureSetService.AddFieldToFeatuerSet("Type", 10, "esriFieldTypeString");
 	districtFeatureSetService.AssignRandomTypesToValues();
 	var districtFeatureCollection = districtFeatureSetService.CreateFeatureCollectionFromFeatureSet();
 	var districtFeatureLayerService = new ESRIMapInstance.FeatureLayer(districtFeatureCollection,"districtLayerId");
-	var districtLayer = await districtFeatureLayerService.CreateFeatureLayerFromFeatureCollection("KGISDistrictName");
+	var districtLayer = await districtFeatureLayerService.CreateFeatureLayerFromFeatureCollection("DistrictName");
 
 	var talukRendererService = new ESRIMapInstance.SmartMappingRenderer(talukLayer, "talukLayerId", map);
 	talukRendererService.CreateColorRenderer("SHAPE_Area");

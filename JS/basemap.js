@@ -8,10 +8,10 @@ async function CreateMapInstance(){
 
 	var talukFeatureSetService = new ESRIMapInstance.FeatureSet(talukFeatureSet);
 	var talukFeatureCollection = talukFeatureSetService.CreateFeatureCollectionFromFeatureSet();
-	var talukFeatureLayerService = new ESRIMapInstance.FeatureLayer(talukFeatureCollection,"");
-	var talukLayer = await talukFeatureLayerService.CreateFeatureLayerFromFeatureCollection("KGISTalukName");
-	var basemapRenderer = await ESRIMapInstance.BasemapRenderer();
-	talukLayer.setRenderer(basemapRenderer);
+	var talukFeatureLayerService = new ESRIMapInstance.FeatureLayer(talukFeatureCollection,"baseLayerId");
+	var talukLayer = await talukFeatureLayerService.CreateFeatureLayerFromFeatureCollection("TalukName");
+    var basemapRenderer = await ESRIMapInstance.BasemapRenderer();
+    talukLayer.setRenderer(basemapRenderer);
     map.addLayer(talukLayer);
     initSlider();
     function initSlider() {
