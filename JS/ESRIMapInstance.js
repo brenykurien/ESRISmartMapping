@@ -95,18 +95,7 @@ ESRIMapInstance.FeatureLayer.prototype =
 								mode: FeatureLayer.MODE_ONDEMAND,
 								visible: true,
 								outFields: ["*"],
-								id: _this.id//,								
-								// infoTemplate: new PopupTemplate({
-								// 	title: "{KGISTalukName}",
-								// 	fieldInfos: [
-								// 		{
-								// 			fieldName: _this.selectedProperty,
-								// 			label: "Total Population",
-								// 			visible: true,
-								// 			format: { places: 0 }
-								// 		}
-								// 	]
-								// })
+								id: _this.id
 		                    });
 	        	_this.layer = layer;
 	        	_this.CreateInfoTemplate(popUpTitleField);
