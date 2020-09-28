@@ -30,35 +30,41 @@ async function CreateMapInstance(){
 	// Selection drop down
 	var dropdown = document.getElementById("fieldNames");
 	dropdown.addEventListener('change', function(){
-		var rendererService = getVisibleLayerRendererService();
+		var rendererService = getVisibleLayerRendererServices();
 		const selectedRenderer = this.value;
 		console.log(selectedRenderer);
 		setSelectedRenderer(selectedRenderer,rendererService);
 	});
-	function getVisibleLayerRendererService(){
-		var visibleLayer = layerListWidget.layers.find(l=>l.visibility);
-		var rendererService;
-		if(visibleLayer && visibleLayer.id){
-			if(visibleLayer.id == "talukLayerId"){
-				rendererService = talukRendererService;
-			} else if(visibleLayer.id == "districtLayerId"){
-				rendererService = districtRendererService;
+	function getVisibleLayerRendererServices(){
+		var visibleLayer = layerListWidget.layers.filter(l=>l.visibility);
+		var rendererServices = [];
+		visibleLayer.map(v=>{
+			if(v && v.id){
+				rendererServices.push(getRendererServiceFromLayerId(v.id));
 			}
-		}
-		return rendererService;
+		});
+		return rendererServices;
 	}
-	function setSelectedRenderer(selectedRenderer,rendererService){
-		if(rendererService){
+	function getRendererServiceFromLayerId(id){
+		switch (id){
+			case "talukLayerId":
+				return talukRendererService;
+			case "districtLayerId":
+				return districtRendererService;
+		}
+	}
+	function setSelectedRenderer(selectedRenderer,rendererServices){
+		if(rendererServices){
 			if (selectedRenderer == "ColorRenderer") {
-				rendererService.CreateColorRenderer("SHAPE_Area");
+				rendererServices.map(s=>s.CreateColorRenderer("SHAPE_Area"));
 			} else if (selectedRenderer == "ClassedSizeRenderer") {
-				rendererService.CreateClassedSizeRenderer("quantile","SHAPE_Area");
+				rendererServices.map(s=>s.CreateClassedSizeRenderer("quantile","SHAPE_Area"));
 			} else if (selectedRenderer == "ClassedColorRenderer") {
-				rendererService.CreateClassedColorRenderer("quantile","SHAPE_Area");
+				rendererServices.map(s=>s.CreateClassedColorRenderer("quantile","SHAPE_Area"));
 			} else if(selectedRenderer == "SizeRenderer"){
-				rendererService.CreateSizeRenderer("SHAPE_Area");
+				rendererServices.map(s=>s.CreateSizeRenderer("SHAPE_Area"));
 			} else if(selectedRenderer == "TypeRenderer"){
-				rendererService.CreateTypeRenderer("Type");
+				rendererServices.map(s=>s.CreateTypeRenderer("Type"));
 			}
 		}
 	}
@@ -77,8 +83,8 @@ async function CreateMapInstance(){
 		}
 	];
 	var layerListWidget = await new ESRIMapInstance.LayerList(map,layers,"layerList");
-	layerListWidget.on("toggle",function(){
-		var rendererService = getVisibleLayerRendererService();
+	layerListWidget.on("toggle",function(){		
+		var rendererService = getVisibleLayerRendererServices();
 		const selectedRenderer = dropdown[dropdown.selectedIndex].value;
 		console.log(selectedRenderer);
 		setSelectedRenderer(selectedRenderer,rendererService);
