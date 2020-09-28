@@ -1,98 +1,68 @@
 async function CreateMapInstance(){
 
-	var mapService = new ESRIMapInstance.Map("mapId", "topo");
+	var mapService = new ESRIMapInstance.Map("mapId");
 	var map = await mapService.CreateMap();
 
 	var adminBoundaryService = new FeatureSetJSONService.AdminBoundary();
 	var talukFeatureSet = adminBoundaryService.GetTaluks();
-	var districtFeatureSet = adminBoundaryService.GetDistricts();
 
 	var talukFeatureSetService = new ESRIMapInstance.FeatureSet(talukFeatureSet);
-	talukFeatureSetService.AddFieldToFeatuerSet("Type", 10, "esriFieldTypeString");
-	talukFeatureSetService.AssignRandomTypesToValues();
 	var talukFeatureCollection = talukFeatureSetService.CreateFeatureCollectionFromFeatureSet();
-	var talukFeatureLayerService = new ESRIMapInstance.FeatureLayer(talukFeatureCollection,"talukLayerId");
+	var talukFeatureLayerService = new ESRIMapInstance.FeatureLayer(talukFeatureCollection,"baseLayerId");
 	var talukLayer = await talukFeatureLayerService.CreateFeatureLayerFromFeatureCollection("TalukName");
-	
-	var districtFeatureSetService = new ESRIMapInstance.FeatureSet(districtFeatureSet);
-	districtFeatureSetService.AddFieldToFeatuerSet("Type", 10, "esriFieldTypeString");
-	districtFeatureSetService.AssignRandomTypesToValues();
-	var districtFeatureCollection = districtFeatureSetService.CreateFeatureCollectionFromFeatureSet();
-	var districtFeatureLayerService = new ESRIMapInstance.FeatureLayer(districtFeatureCollection,"districtLayerId");
-	var districtLayer = await districtFeatureLayerService.CreateFeatureLayerFromFeatureCollection("DistrictName");
+    var basemapRenderer = await ESRIMapInstance.BasemapRenderer();
+    talukLayer.setRenderer(basemapRenderer);
+    map.addLayer(talukLayer);
+    initSlider();
+    function initSlider() {
+        require(["esri/TimeExtent", "esri/dijit/TimeSlider",
+        "dojo/_base/array","dojo/dom", "dojo/domReady!"],function(TimeExtent,TimeSlider,arrayUtils,dom){
+            var months = ["Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
+        var timeSlider = new TimeSlider({
+            style: "width: 100%;"
+        }, dom.byId("timeSliderDiv"));
+        map.setTimeSlider(timeSlider);
 
-	var talukRendererService = new ESRIMapInstance.SmartMappingRenderer(talukLayer, "talukLayerId", map);
-	talukRendererService.CreateColorRenderer("SHAPE_Area");
+        var timeExtent = new TimeExtent();
+        var myTimeStepIntervals = [
+            new Date(2020, 06, 01), 
+            new Date(2020, 06, 10),
+            new Date(2020, 06, 20), 
+            new Date(2020, 06, 30), 
+            new Date(2020, 07, 10),
+            new Date(2020, 07, 20), 
+            new Date(2020, 07, 31),
+            new Date(2020, 08, 10),
+            new Date(2020, 08, 20), 
+            new Date(2020, 08, 30),
+            new Date(2020, 09, 03)
+        ];
+        dom.byId("selectedDate").innerHTML = "<i>" + myTimeStepIntervals[0].getDate() + ' ' + months[myTimeStepIntervals[0].getMonth()-1] + "<\/i>";
+        timeSlider.setTimeStops(myTimeStepIntervals);
+        timeSlider.setThumbCount(1);
+        timeSlider.singleThumbAsTimeInstant(true);
+        //timeSlider.setThumbIndexes([0,0]);
+        timeSlider.setThumbMovingRate(2000);
+        timeSlider.startup();
+        
+        //add labels for every other time stop
+        var labels = arrayUtils.map(timeSlider.timeStops, function(timeStop, i) {
+            if ( i % 2 === 0 ) {
+            return timeStop.getDate() + ' ' + months[timeStop.getMonth()-1];
+            } else {
+            return "";
+            }
+        });
 
-	var districtRendererService = new ESRIMapInstance.SmartMappingRenderer(districtLayer, "districtLayerId", map);
-	districtRendererService.CreateColorRenderer("SHAPE_Area");
+        timeSlider.setLabels(labels);
 
-	// Selection drop down
-	var dropdown = document.getElementById("fieldNames");
-	dropdown.addEventListener('change', function(){
-		var rendererService = getVisibleLayerRendererServices();
-		const selectedRenderer = this.value;
-		console.log(selectedRenderer);
-		setSelectedRenderer(selectedRenderer,rendererService);
-	});
-	function getVisibleLayerRendererServices(){
-		var visibleLayer = layerListWidget.layers.filter(l=>l.visibility);
-		var rendererServices = [];
-		visibleLayer.map(v=>{
-			if(v && v.id){
-				rendererServices.push(getRendererServiceFromLayerId(v.id));
-			}
-		});
-		return rendererServices;
-	}
-	function getRendererServiceFromLayerId(id){
-		switch (id){
-			case "talukLayerId":
-				return talukRendererService;
-			case "districtLayerId":
-				return districtRendererService;
-		}
-	}
-	function setSelectedRenderer(selectedRenderer,rendererServices){
-		if(rendererServices){
-			if (selectedRenderer == "ColorRenderer") {
-				rendererServices.map(s=>s.CreateColorRenderer("SHAPE_Area"));
-			} else if (selectedRenderer == "ClassedSizeRenderer") {
-				rendererServices.map(s=>s.CreateClassedSizeRenderer("quantile","SHAPE_Area"));
-			} else if (selectedRenderer == "ClassedColorRenderer") {
-				rendererServices.map(s=>s.CreateClassedColorRenderer("quantile","SHAPE_Area"));
-			} else if(selectedRenderer == "SizeRenderer"){
-				rendererServices.map(s=>s.CreateSizeRenderer("SHAPE_Area"));
-			} else if(selectedRenderer == "TypeRenderer"){
-				rendererServices.map(s=>s.CreateTypeRenderer("Type"));
-			}
-		}
-	}
-	var layers = [
-		{
-			layer: talukLayer,
-			title: "Taluks",
-			visible: true,
-			showLegend: true
-		},
-		{
-			layer: districtLayer,
-			title: "Districts",
-			visible: true,
-			showLegend: true
-		}
-	];
-	var layerListWidget = await new ESRIMapInstance.LayerList(map,layers,"layerList");
-	layerListWidget.on("toggle",function(){		
-		var rendererService = getVisibleLayerRendererServices();
-		const selectedRenderer = dropdown[dropdown.selectedIndex].value;
-		console.log(selectedRenderer);
-		setSelectedRenderer(selectedRenderer,rendererService);
-	});
-	layerListWidget.startup();
-	map.on("layer-add", function () {
-		layerListWidget.refresh();
-	});
+        timeSlider.on("time-extent-change", function(evt) {
+            var startValString = evt.startTime.getDate() + ' ' + months[evt.startTime.getMonth()-1];
+            dom.byId("selectedDate").innerHTML = "<i>" + startValString  + "<\/i>";
+        });
+        })
+        
+    }
 }
 
 CreateMapInstance();
